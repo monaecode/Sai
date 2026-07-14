@@ -89,7 +89,11 @@ else
   TOOLS_SECTION="   - (no --tools-file provided — run scripts/agent-verify-caps first)"
 fi
 
-SPEC=$(cat <<EOF
+# Nested heredoc-in-$(...) is avoided here: bash mis-tracks quote nesting
+# across the substitution boundary when the body has an odd number of
+# unescaped apostrophes (this template's possessives trigger it). `read -d`
+# gives identical ${VAR} expansion without the nested-substitution parse bug.
+read -r -d '' SPEC <<EOF || true
 # Cursor automation profile — ${AGENT_NAME} (${AGENT_ID})
 
 > Generated ${TODAY} by \`scripts/agent-automation-spec\` for principal
@@ -181,7 +185,6 @@ SAI PROTOCOL BLOCK (identical for all SAI automations — do, in order):
    \`"SAI ${AGENT_NAME} — ${ROLE_TITLE} (${AGENT_ID}); <schedule>; created <date>"\`
    (any agent can make this edit on a branch with proper trailers).
 EOF
-)
 
 if [ "$TO_STDOUT" = "1" ]; then
   printf '%s\n' "$SPEC"

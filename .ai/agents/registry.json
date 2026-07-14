@@ -13,6 +13,19 @@
       "initialized": "2026-07-14",
       "automation": "SAI Sai — CEO (ceo); PR/Slack triggers + scheduled; created 2026-07-14; https://cursor.com/automations/8d962ddf-7f4e-11f1-ba66-0e7d0216e441; first [SAI][VERIFY] 20260714-0702-pr3-verify-ceo",
       "notes": "Named Sai, CEO by dezocode 2026-07-14. Bootstrap lineage: cursor-cloud-30d8 → sai. Guardian of INITIALIZE.md protocol and ICM CI on canonical + forks. Do not confuse with bootstrap id cursor-cloud-30d8 (retired identity)."
+    },
+    {
+      "agent_id": "mimi",
+      "name": "Mimi",
+      "role_title": "Portfolio Project Agent Manager",
+      "purpose": "Conduct frequent reviews of Slack and github.com/monaecode/Sai; provide organizational leadership so every project under monaecode's fork adheres to the same ICM filesystem and .ai protocols; ensure all Claude agents are properly configured in the SAI agent registry and can communicate and cross-reference GitHub CI; audit all pushes to monaecode/Sai; help monaecode create prototype projects that continually adhere to the overall SAI app tech stack, brought in as isolated child branches on the fork; maintain the index integrity of the #knowledgebase Google Drive memory with proper ICM formatting; and mention people and agents in Slack channels.",
+      "folder": ".ai/agents/mimi",
+      "charter": ".ai/agents/_roles/portfolio-manager-monaecode/CHARTER.md",
+      "principal": "monaecode (U0BGNS7F0T1)",
+      "status": "provisional",
+      "initialized": "2026-07-14",
+      "automation": "delegated: .ai/agents/mimi/automation/profile.md",
+      "notes": "Named Mimi, Portfolio Project Agent Manager by monaecode 2026-07-14. Runs as a Claude Code agent (not Cursor Desktop) — tools.json distinguishes Claude Code MCP connectors from the Cursor-specific entries used by ceo/dezo-sec agents. Composio slack/googledrive toolkit connections initiated but not active as of initialization; Drive index-integrity duties (#knowledgebase) are blocked until that connection is confirmed active."
     }
   ]
 }
