@@ -1,0 +1,62 @@
+name: agent-audit
+
+# Server-side verification of agent audit metadata. Git hooks are local and
+# bypassable; this workflow re-verifies commit/PR metadata and publishes a
+# push report that confirms actual remote state (Git has no post-push hook).
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify-audit-metadata:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine commit range
+        id: range
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "range=${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ] && git cat-file -e "${{ github.event.before }}" 2>/dev/null; then
+            echo "range=${{ github.event.before }}..${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          else
+            # New branch or shallow before-SHA: audit the most recent commits.
+            echo "range=-n 20 ${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Verify agent audit metadata
+        run: |
+          chmod +x scripts/verify-agent-audit
+          scripts/verify-agent-audit "${{ steps.range.outputs.range }}"
+
+      - name: Validate event and schema JSON
+        run: |
+          set -e
+          for f in .ai/shared/schemas/*.json; do
+            python3 -m json.tool "$f" > /dev/null
+            echo "OK $f"
+          done
+          for f in $(git ls-files '.ai/runs/*/metadata.json'); do
+            python3 -m json.tool "$f" > /dev/null
+            echo "OK $f"
+          done
+
+      - name: Server-side push report (remote state confirmation)
+        if: github.event_name == 'push'
+        run: |
+          echo "Server-side confirmation: ref=${{ github.ref }} sha=${{ github.sha }} pusher=${{ github.actor }}"
+          echo "This CI run itself is evidence the remote received the push."
+          # Slack delivery from CI requires the SAI_SLACK_BOT_TOKEN secret;
+          # when configured, uncomment to publish the push report server-side:
+          # curl -sS -X POST https://slack.com/api/chat.postMessage \
+          #   -H "Authorization: Bearer ${{ secrets.SAI_SLACK_BOT_TOKEN }}" \
+          #   -H "Content-Type: application/json" \
+          #   --data "{\"channel\":\"C0BH15HDN2Z\",\"text\":\"[SAI][PUSH][ci] ref=${{ github.ref }} sha=${{ github.sha }} pusher=${{ github.actor }} run=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}"

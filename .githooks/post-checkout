@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Report branch/worktree transitions. Thin wrapper; never blocks git.
+[ "${SAI_AGENT_REPORT_ACTIVE:-}" = "1" ] && exit 0
+prev=$1 new=$2 branch_flag=$3
+[ "$branch_flag" = "1" ] || exit 0            # ignore file checkouts
+[ "$prev" = "$new" ] && exit 0                # no-op checkout
+REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null) || exit 0
+"$REPO_ROOT/scripts/agent-report" emit WORKTREE \
+  --purpose "Branch/worktree transition" \
+  --result "checked out $(git rev-parse --abbrev-ref HEAD) at $(git rev-parse --short HEAD) (from ${prev:0:7})" \
+  || true
+exit 0
