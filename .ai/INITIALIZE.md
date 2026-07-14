@@ -119,79 +119,76 @@ delivery path you will use, including the offline fallback.
 
 **Verification:** both `gh` outputs quoted in your Phase 7 report.
 
-## Phase 5 — Naming and role title (human review gate)
+## Phase 5 — Naming, role title, and purpose (human review gate)
 
-After Phases 0–4 pass, and **before** doing any task work, ask your
-principal to give you:
+After Phases 0–4 pass — your environment set up and following all hooks and
+rules in `.ai` — and **before** doing any task work, ask your principal,
+in these words:
 
-1. a **name** (how you will be addressed and how you sign reports), and
-2. a **role title** (e.g. "Secretary to monaecode", "Release Steward").
+> **"What will you name me, and what will my role title be?"**
 
-Do not name yourself. Do not skip this because it feels ceremonial — the
-registry keys ownership and conflict resolution to named agents. While
-waiting, you may prepare but not push material work.
+1. Your principal grants a **name** (how you are addressed and sign
+   reports) and a **role title** (e.g. "Secretary to monaecode", "Release
+   Steward"). Do not name yourself; do not skip this because it feels
+   ceremonial — the registry keys ownership and conflict resolution to
+   named agents.
+2. Then **clarify your purpose**: state back, in one paragraph, what you
+   understand your purpose to be under that name and role title (derived
+   from your charter and the role granted). Ask your principal to confirm
+   or correct it. The confirmed paragraph is your purpose — **stick to
+   it**. Work outside it requires a new instruction from your principal,
+   reported as such; never expand your own scope.
+3. Register yourself: add your entry — including the confirmed `purpose` —
+   to `.ai/agents/registry.json` (schema documented in the file) on a
+   branch, commit with your trailers, and include it in your next PR.
 
-When granted, register yourself: add your entry to
-`.ai/agents/registry.json` (schema documented in the file) on a branch,
-commit with your trailers, and include it in your next PR.
+While waiting for the grant, you may prepare but not push material work.
 
-## Phase 6 — Cursor automation self-setup
+## Phase 6 — Offer your automation profile (default for every agent)
 
-Every initialized agent maintains its own Cursor automation so that
-protocol upkeep does not depend on memory. There are exactly two allowed
-outcomes of this phase: the automation **exists**, or a complete
-specification for it has been **delivered to your principal**. "Unavailable"
-is not an outcome.
+Immediately after Phase 5, **every** agent — regardless of role — generates
+and offers its Cursor automation profile to its principal. This is the
+default final deliverable of initialization, so that dezocode or monaecode
+can easily and consistently set up automation agents for any role, and so
+that every automation follows the same Slack, GitHub, and CI protocols.
+There are exactly two allowed end states: the automation **exists**
+(confirmed by its first run), or the complete profile has been **delivered
+to your principal**. "Unavailable" is not an outcome.
 
-**Path A — you can create automations** (Cursor Desktop → Automations, or
-[cursor.com/automations](https://cursor.com/automations)):
-
-1. Generate your prompt and settings so they are exact, not improvised:
+1. Generate the profile from your granted identity:
    ```bash
    scripts/agent-automation-spec --agent-id <your-agent-id> \
-     --agent-name "<your granted name>" --principal "<your principal>" \
-     --repo <owner/repo per your charter> --schedule "<approved cadence>" --stdout
-   ```
-2. Create the automation exactly as the spec says (name
-   `SAI <your-name> — protocol upkeep (<agent-id>)`, owner = your
-   principal, schedule approved by them, the prompt verbatim).
-3. Run it once manually; confirm its `[SAI][VERIFY]` message appears in
-   #agentupdates.
-4. Record name, schedule, and creation date in your registry entry's
-   `automation` field.
-
-**Path B — you cannot create automations** (cloud VM, restricted
-environment, missing permissions). Complete the delegated path in full:
-
-1. Generate the spec file:
-   ```bash
-   scripts/agent-automation-spec --agent-id <your-agent-id> \
-     --agent-name "<your granted name>" --principal "<your principal>" \
+     --agent-name "<your granted name>" --role-title "<your granted role title>" \
+     --principal "<your principal>" --purpose "<your confirmed purpose paragraph>" \
      --repo <owner/repo per your charter> --schedule "<proposed cadence>"
    ```
-   This writes `.ai/agents/automation-specs/<agent-id>.md` containing every
-   detail the principal needs: where to create it, every settings field
-   (name, owner, schedule, repository, branch, environment, optional
-   secrets), the full automation prompt to paste verbatim, and the
-   post-creation confirmation steps. Nothing is left for the principal to
-   figure out.
-2. Commit the spec with your trailers and include it in your PR.
-3. Deliver it: post the spec's **full prompt block and settings table** to
-   #agentupdates, tagging your principal, so it can be pasted into
+   This writes `.ai/agents/automation-specs/<agent-id>.md` containing
+   everything, keyed to the actual Cursor Automations UI: the automation
+   Name, repository selection, **Scheduled** trigger (plus optional Slack/
+   GitHub triggers), the **Agent Instructions** to paste verbatim (your
+   role-specific purpose + the SAI protocol block shared by all agents),
+   model note, required **Tools** (Slack → Send to Slack, Slack → Read
+   Public Slack Channels; optional GitHub → Comment on Pull Request), and
+   the save → activate → first-run confirmation steps. Nothing is left for
+   the principal to figure out.
+2. Commit the profile with your trailers and include it in your PR.
+3. **Offer it**: post the profile's settings and full Agent Instructions
+   block to #agentupdates, tagging your principal, so it can be pasted into
    Cursor → Automations without opening the repository.
-4. Set your registry entry to
-   `"automation": "delegated: .ai/agents/automation-specs/<agent-id>.md (awaiting creation by <principal>)"`.
-   The semantic verifier rejects `unavailable` and rejects `delegated:`
-   entries whose spec file does not exist.
-5. When your principal confirms creation and the first manual run has
-   posted its `[SAI][VERIFY]` message, update the registry field to the
-   real automation name, schedule, and creation date.
+4. Record the state in your registry entry:
+   - principal (or you, if they tell you to create it yourself) creates it,
+     runs it once, and its `[SAI][VERIFY]` message appears in #agentupdates
+     → set `automation` to the real name, schedule, and creation date;
+   - otherwise → set
+     `"automation": "delegated: .ai/agents/automation-specs/<agent-id>.md (awaiting creation by <principal>)"`.
+     The semantic verifier rejects `unavailable` and rejects `delegated:`
+     entries whose profile file does not exist.
 
-On both paths: enable the repository's Cursor rules (`.cursor/rules/` —
-`sai-coordination.mdc` applies always) and keep the git hooks installed in
-every clone you create (`scripts/install-agent-hooks`). Say in Phase 7 which
-path you took — never claim an automation exists before its first confirmed
-run.
+On both end states: enable the repository's Cursor rules (`.cursor/rules/`
+— `sai-coordination.mdc` applies always) and keep the git hooks installed
+in every clone you create (`scripts/install-agent-hooks`). Say in Phase 7
+which state you reached — never claim an automation exists before its first
+confirmed run.
 
 ## Phase 7 — Initialization report (completes initialization)
 
@@ -205,8 +202,8 @@ Branch/worktree: <branch and safe worktree identifier>
 Base SHA: <short SHA>
 Purpose: Agent initialization per .ai/INITIALIZE.md
 Justification: <who instructed initialization>
-Scope: registry entry; no code changes
-Result: Phases 0-6 complete; agent-init PASS; named "<name>" by <principal>
+Scope: registry entry + automation profile; no code changes
+Result: Phases 0-6 complete; agent-init PASS; named "<name>", titled "<role title>" by <principal>; purpose confirmed; automation <created and verified | offered (delegated: <profile path>)>
 Verification: <agent-init output line; gh repo view outputs; hook self-test evidence>
 Git: <registry commit/PR link, or "pending">
 Drive: <status>

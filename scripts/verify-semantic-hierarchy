@@ -141,6 +141,10 @@ if os.path.exists(".ai/agents/registry.json"):
                 fail(f"registry agent[{i}]: charter path does not exist: {charter}")
             if a.get("status") not in ("active", "provisional", "retired", None):
                 fail(f"registry agent[{i}]: status must be active|provisional|retired")
+            if a.get("status") == "active":
+                for key in ("name", "role_title", "purpose"):
+                    if not a.get(key):
+                        fail(f"registry agent[{i}]: active agents must have '{key}' (granted/confirmed by the principal in Phase 5)")
             auto = a.get("automation") or ""
             if a.get("status") in ("active", "provisional"):
                 if not auto:
