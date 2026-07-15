@@ -150,11 +150,11 @@
     },
     {
       "id": "sai-coordination-rule",
-      "kind": "cursor-rule",
-      "server": "cursor",
+      "kind": "repo-policy",
+      "server": "sai",
       "tool": ".cursor/rules/sai-coordination.mdc",
       "status": "verified",
-      "evidence": "alwaysApply rule present; binds all SAI agents",
+      "evidence": "Repository policy file read manually from Codex Desktop on 2026-07-15; it binds SAI work but is not a Codex-native tool or automatically loaded Cursor rule in this runtime",
       "verified_at": "2026-07-15"
     }
   ],

@@ -1,4 +1,5 @@
-# claude runtime suite
+# Claude Code runtime — unconfigured Saul adapter
 
-Primary runtime for this agent: `codex-desktop` (codex).
-Capability file: `runtimes/codex/tools.json` when this suite is primary.
+Claude Code is not configured or verified for Saul. A future Claude session
+must create and verify its own `runtimes/claude/tools.json`; it must not copy or
+rewrite Saul's canonical Codex capability evidence.

@@ -7,5 +7,7 @@
 - PR target: `Dezocode/Sai:main`
 - Slack: INTAKE, PLAN, CHANGE, and COMMIT delivered to `#agentupdates`; `#dev`
   created and seeded with the roadmap Canvas.
+- Phase 8 introduction delivered to `#help-newagents`:
+  https://sai-qbz5908.slack.com/archives/C0BH8LCJLDS/p1784098182103579
 - Drive: pending because `SAI_DRIVE_REMOTE` is unset.
 - Merge: not authorized; draft PR remains at the human review gate.

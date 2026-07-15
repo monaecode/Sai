@@ -12,10 +12,17 @@
     "dev": "C0BHBGBNMT7"
   },
   "automation_triggers": {
-    "required": [{"type": "scheduled", "note": "baseline protocol upkeep — configure per runtime in Phase 7"}],
+    "required": [
+      {
+        "type": "scheduled",
+        "status": "not_configured",
+        "mechanism": "none verified for Codex Desktop",
+        "note": "Saul is session-driven; do not claim a recurring schedule until a real Codex mechanism and first successful run are recorded"
+      }
+    ],
     "optional": [
-      {"type": "slack", "note": "monitor #agentupdates and #dev; Codex connector is session-driven, not an always-on trigger"},
-      {"type": "github", "note": "run on PR events"}
+      {"type": "slack", "status": "session_driven", "note": "monitor #agentupdates and #dev through the connected Codex session; not an always-on trigger"},
+      {"type": "github", "status": "not_configured", "note": "no PR-event wake mechanism verified for Codex Desktop"}
     ]
   },
   "ci_enforcement": {
