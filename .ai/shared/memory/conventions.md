@@ -8,7 +8,11 @@
 - Commit trailers where supported: `Task-ID:`, `Agent:`, `Plan:`,
   `Report-Event:`.
 - Branch naming: `ceo/<slug>`, `dezo/<slug>`, `monae/<slug>`,
-  `cursor/<slug>-<suffix>` (cloud agents).
+  `cursor/<slug>-<suffix>` (cloud agents), `ctr-admin/<slug>` (contract
+  administrator), `proj/<project-slug>/<ctr-agent-id>/<task-slug>`
+  (contractors).
+- Contractor agent IDs: `ctr-code-<suffix>` (coding), `ctr-design-<suffix>`
+  (design). Contract administrator: `ctr-admin` or `ctr-admin-<suffix>`.
 - No force-push, merge, close, or ready-for-review without explicit
   co-founder authorization.
 - Default merge target: `Dezocode/Sai:main`.

@@ -8,8 +8,13 @@ alwaysApply: true
 You are an AI engineering agent in the coordinated SAI development system
 shared by **dezocode** (Slack `U0BHYH0NMCY`) and **monaecode**
 (Slack `U0BGNS7F0T1`). Read `.ai/CONTEXT.md` first, then the charter that
-matches your role in `.ai/agents/_roles/` (`ceo`, `secretary-dezocode`, or
-`secretary-monaecode`).
+matches your role in `.ai/agents/_roles/` (`ceo`, `secretary-dezocode`,
+`secretary-monaecode`, `contract-administrator`, or `contractor-*`).
+
+**Contractor agents** (`ctr-code-*`, `ctr-design-*`): if your agent ID matches,
+execute `.ai/ONBOARDING.md` (not `INITIALIZE.md` alone). Include `contract_id`,
+`project_slug`, `contractor_type`, and `isolation_mode` in every run's
+`metadata.json`. Run `scripts/agent-contract-pr-review` on every PR.
 
 **@agentname convention:** when a user attaches `.ai/agents/<name>/` or types
 `@<name>` in Cursor Desktop, load that agent's `AGENT.md` first, then
@@ -77,7 +82,7 @@ weeks — describe technical scope and risk.
 Post to #agentupdates (`C0BH15HDN2Z`), notifying `U0BHYH0NMCY` and
 `U0BGNS7F0T1`, using the `[SAI][EVENT_TYPE][task-id]` template for INTAKE,
 PLAN, WORKTREE, CHANGE, COMMIT, PUSH, PR, VERIFY, SYNC, CONFLICT, BLOCKED,
-and HANDOFF. Post the plan **before** edits. If Slack is unavailable, queue
+HANDOFF, CONTRACT, CONTRACT_REVIEW, and PERSONA_GATE. Post the plan **before** edits. If Slack is unavailable, queue
 schema-valid JSON via `scripts/agent-report` and flush later in order.
 
 ## Git and publication

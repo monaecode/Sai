@@ -19,6 +19,10 @@ runtime suites live under `runtimes/{cursor,claude,codex}/`.
     secretary-dezocode/CHARTER.md
     secretary-monaecode/CHARTER.md
     portfolio-manager-monaecode/CHARTER.md
+    contract-administrator/CHARTER.md
+    contractor-base/CHARTER.md
+    contractor-coding/CHARTER.md
+    contractor-design/CHARTER.md
   automation-specs/      <- legacy specs; new profiles live in agent folders
   <agent-name>/          <- one folder per registered agent
     AGENT.md             <- identity card (runtime-neutral; load first)
@@ -31,7 +35,37 @@ runtime suites live under `runtimes/{cursor,claude,codex}/`.
       cursor/            <- Cursor Desktop / Cloud suite
       claude/            <- Claude Code CLI suite
       codex/             <- OpenAI Codex Desktop suite (stub until live init)
+    memory/              <- per-agent audit memory (contractors required)
+      manifest.json
+      contracts/         <- active contract references
+      audit/
+        index.json
+        YYYY/summary.jsonl
+      capabilities-history.jsonl
 ```
+
+## Contractor agents
+
+Contractors (`ctr-code-*`, `ctr-design-*`) are hired under contracts in
+`.ai/contracts/<contract-id>/`. They execute `.ai/ONBOARDING.md` (not
+`INITIALIZE.md` alone). Sai audits against both protocols.
+
+- **Contract Administrator** (`ctr-admin`) — drafts contracts, scaffolds
+  contractors, reviews history. Charter:
+  `.ai/agents/_roles/contract-administrator/CHARTER.md`
+- **Coding contractor** — `.ai/agents/_roles/contractor-coding/CHARTER.md`
+- **Design contractor** — `.ai/agents/_roles/contractor-design/CHARTER.md`
+
+Branch pattern: `proj/<project-slug>/<ctr-agent-id>/<task-slug>`
+
+## Registering a contractor
+
+1. Contract Administrator runs `scripts/agent-contract-scaffold`.
+2. Owner pastes `onboarding-prompt.md` into a new agent session.
+3. Contractor executes `.ai/ONBOARDING.md` Phases 0–8.
+4. Sai audits INITIALIZE subset + ONBOARDING; persona gate before `active`.
+
+## Registering a staff agent (non-contractor)
 
 ## @agentname convention (Cursor)
 
@@ -42,7 +76,8 @@ that agent's complete profile to your session.
 ## Claude Code and Codex Desktop
 
 - **Claude Code:** read repo-root `CLAUDE.md`, then `.ai/agents/<name>/AGENT.md`.
-- **Codex Desktop:** read repo-root `CODEX.md`, then follow `INITIALIZE.md`.
+- **Codex Desktop:** read repo-root `CODEX.md`, then follow `INITIALIZE.md`
+  (staff) or `.ai/ONBOARDING.md` (contractors).
 - Survey capabilities only into `runtimes/<suite>/tools.json` for your runtime.
 
 ## Registering a new agent

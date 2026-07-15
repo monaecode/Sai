@@ -44,3 +44,10 @@ branch_naming:
   secretary_dezocode: "dezo/<task-slug>"
   secretary_monaecode: "monae/<task-slug>"
   cloud_agents: "cursor/<task-slug>-<run-suffix>"
+  contract_administrator: "ctr-admin/<task-slug>"
+  contractor:
+    pattern: "proj/<project-slug>/<contractor-agent-id>/<task-slug>"
+    example: "proj/splunk-clone/ctr-code-alpha1/auth-pipeline"
+    agent_id_prefix:
+      coding: "ctr-code-"
+      design: "ctr-design-"

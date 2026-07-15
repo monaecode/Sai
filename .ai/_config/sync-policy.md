@@ -21,6 +21,17 @@ SAI/
       snapshots/
       memory/
       audit/
+  contracts/
+    <contract-id>/  <- mirror of .ai/contracts/<contract-id>/
+  agents/
+    <agent-id>/
+      memory/       <- mirror of .ai/agents/<name>/memory/
+  projects/
+    <project-slug>/
+      contract-refs.json
+      branches-index.json   <- branch -> contractor -> contract mapping
+      coordination/
+        slack-channel.json
   coordination/
     events/         <- mirrored agent events (JSON)
     handoffs/       <- mirrored handoff.md files

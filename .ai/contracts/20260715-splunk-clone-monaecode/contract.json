@@ -1,0 +1,38 @@
+{
+  "contract_id": "20260715-splunk-clone-monaecode",
+  "project_slug": "splunk-clone",
+  "project_name": "Cybersecurity Splunk Clone",
+  "principal": "monaecode (U0BGNS7F0T1)",
+  "contractor_type": "coding",
+  "isolation_mode": "prototype",
+  "primary_runtime": "claude-code-cli",
+  "compatibility_layer": "sai-mac-ios-android",
+  "repository": "monaecode/Sai",
+  "branch_prefix": "proj/splunk-clone/",
+  "slack_channel": "#proj-splunk-clone",
+  "acceptance_criteria": [
+    "Deliverables match contract scope and claimed files",
+    "ICM run artifacts complete for every executed stage",
+    "scripts/agent-contract-pr-review PASS on every PR"
+  ],
+  "deliverables": [],
+  "approved_capabilities": [],
+  "assigned_contractors": [
+    {
+      "agent_id": "ctr-code-splunk1",
+      "folder": ".ai/agents/alpha",
+      "branch": "proj/splunk-clone/ctr-code-splunk1/pilot-intake",
+      "status": "provisional"
+    },
+    {
+      "agent_id": "ctr-code-splunk2",
+      "branch": "proj/splunk-clone/ctr-code-splunk2/ingest-pipeline",
+      "status": "provisional",
+      "note": "Second contractor slot — unique branch, same project_slug"
+    }
+  ],
+  "status": "active",
+  "created_at": "2026-07-15T16:24:14Z",
+  "created_by": "ctr-admin",
+  "contract_admin_agent_id": "ctr-admin"
+}

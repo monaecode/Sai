@@ -1,0 +1,7 @@
+{
+  "agent_id": "ctr-admin",
+  "folder": ".ai/agents/cora",
+  "surveyed_at": "2026-07-15",
+  "environment": "cursor-cloud-vm",
+  "capabilities": []
+}
