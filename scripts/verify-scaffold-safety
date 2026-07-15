@@ -43,6 +43,32 @@ check_fail "memory-scaffold invalid contract-id" \
   scripts/agent-memory-scaffold --agent-id safe-agent --folder ".ai/agents/safe" \
     --contract-id '../../evil'
 
+# Symlink under .ai/agents pointing outside must be rejected (CTO block at 745c686)
+SYMLINK_OUT=$(mktemp -d)
+SYMLINK_SLUG="symlink-escape"
+ln -sf "$SYMLINK_OUT" ".ai/agents/$SYMLINK_SLUG"
+check_fail "memory-scaffold symlink folder" \
+  scripts/agent-memory-scaffold --agent-id test-agent --folder ".ai/agents/$SYMLINK_SLUG"
+rm -f ".ai/agents/$SYMLINK_SLUG"
+rm -rf "$SYMLINK_OUT"
+
+# Python fallback (macOS) must resolve symlinks for containment, not abspath-only
+SYMLINK_OUT2=$(mktemp -d)
+ln -sf "$SYMLINK_OUT2" ".ai/agents/symlink-check"
+RESOLVED=$(python3 - "$REPO_ROOT/.ai/agents/symlink-check" <<'PY'
+import os, sys
+print(os.path.realpath(sys.argv[1], strict=False))
+PY
+)
+if [ "$RESOLVED" = "$SYMLINK_OUT2" ]; then
+  echo "PASS  python-realpath follows symlink for containment"
+else
+  echo "FAIL  python-realpath — expected $SYMLINK_OUT2 got $RESOLVED" >&2
+  FAILED=1
+fi
+rm -f ".ai/agents/symlink-check"
+rm -rf "$SYMLINK_OUT2"
+
 # agent-scaffold must reject bad folder-name
 check_fail "agent-scaffold bad folder" \
   scripts/agent-scaffold --agent-id dezo-sec-test1 --principal dezocode \

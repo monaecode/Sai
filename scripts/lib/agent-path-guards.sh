@@ -3,8 +3,9 @@
 # Sourced by agent-scaffold, agent-memory-scaffold, agent-contract-scaffold.
 set -euo pipefail
 
-# Portable equivalent of GNU realpath -m (path need not exist).
-# macOS realpath lacks -m; python3 is available in SAI CI and agent environments.
+# Resolve paths for containment checks: normalize missing tail components and
+# follow existing symlinks so out-of-subtree targets cannot pass prefix checks.
+# macOS realpath lacks -m; python3 realpath(strict=False) is the portable fallback.
 guard_normalize_path() {
   local path=$1
   if command -v realpath >/dev/null 2>&1 && realpath -m / >/dev/null 2>&1; then
@@ -13,7 +14,7 @@ guard_normalize_path() {
   fi
   python3 - "$path" <<'PY'
 import os, sys
-print(os.path.normpath(os.path.abspath(sys.argv[1])))
+print(os.path.realpath(sys.argv[1], strict=False))
 PY
 }
 
