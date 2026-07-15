@@ -23,6 +23,9 @@ event_types:
   - CONFLICT
   - BLOCKED
   - HANDOFF
+  - CONTRACT
+  - CONTRACT_REVIEW
+  - PERSONA_GATE
 
 # Required message format (plain text, one field per line):
 message_template: |

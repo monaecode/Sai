@@ -57,6 +57,42 @@
       },
       "automation": "delegated: .ai/agents/saul/runtimes/codex/automation/profile.md (session-driven Codex profile; no unattended trigger verified)",
       "notes": "Named Saul and appointed CTO by dezocode on 2026-07-15. Operates under the secretary-dezocode charter with an explicit expanded technical-roadmap mandate; Sai remains the sole CEO. Owns #dev (C0BHBGBNMT7), roadmap.json, compatibility gates, prototype worktree coordination, runtime capability integrity, and development CI stewardship."
+    },
+    {
+      "agent_id": "ctr-admin",
+      "name": "Cora",
+      "role_title": "Contract Administrator",
+      "purpose": "Draft contractor contracts, scaffold provisional contractor agents, review contractor work history against signed contracts, and route Sai audit before contractors begin implementation — serving both co-founders under Sai coordination.",
+      "folder": ".ai/agents/cora",
+      "charter": ".ai/agents/_roles/contract-administrator/CHARTER.md",
+      "principal": "dezocode (U0BHYH0NMCY) and monaecode (U0BGNS7F0T1)",
+      "status": "active",
+      "initialized": "2026-07-15",
+      "primary_runtime": "cursor-cloud-vm",
+      "entry_points": {
+        "cursor": "@cora in Cursor Desktop → .ai/agents/cora/",
+        "claude-code-cli": "Not primary — see runtimes/claude/README.md",
+        "codex-desktop": "Not primary — see runtimes/codex/README.md"
+      },
+      "automation": "delegated: .ai/agents/cora/runtimes/cursor/automation/profile.md (awaiting creation by dezocode or monaecode)",
+      "notes": "Named Cora, Contract Administrator by dezocode and monaecode 2026-07-15. Drafts contracts, scaffolds contractors, reviews history. Reports to Sai for ICM enforcement."
+    },
+    {
+      "agent_id": "ctr-code-splunk1",
+      "name": "Alpha",
+      "role_title": "Coding Contractor",
+      "purpose": "Contracted coding work on Cybersecurity Splunk Clone under contract 20260715-splunk-clone-monaecode.",
+      "folder": ".ai/agents/alpha",
+      "charter": ".ai/agents/_roles/contractor-coding/CHARTER.md",
+      "principal": "monaecode (U0BGNS7F0T1)",
+      "status": "provisional",
+      "primary_runtime": "claude-code-cli",
+      "entry_points": {
+        "claude-code-cli": "Open monaecode/Sai in Claude Code; read CLAUDE.md → .ai/agents/alpha/AGENT.md",
+        "cursor": "Optional — @alpha in Cursor; not primary runtime"
+      },
+      "automation": "delegated: .ai/agents/alpha/runtimes/claude/automation/profile.md (awaiting ONBOARDING persona gate)",
+      "notes": "Pilot coding contractor for splunk-clone prototype. ONBOARDING.md in progress; Sai audit pending persona gate."
     }
   ]
 }

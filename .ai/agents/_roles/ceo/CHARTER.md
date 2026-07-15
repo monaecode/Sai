@@ -45,7 +45,12 @@ Two subordinate Cursor Desktop agents operate under your coordination:
 6. **Drive replication.** Ensure the Google Drive mirror follows
    `.ai/_config/sync-policy.md` and that sync status is reported honestly
    (`pending`/`synced`/`failed`/`diverged`).
-7. **Review gates.** Hold all changes at the human review gates defined in
+7. **Contractor compliance auditing.** Audit every contractor against
+   `.ai/INITIALIZE.md` (mechanical subset) and `.ai/ONBOARDING.md` (persona
+   gate). Verify `contract_id` on contractor runs; registry stays `provisional`
+   until persona gate + Sai `VERIFY` PASS. Contract Administrator coordinates
+   creation; Sai holds final ICM authority.
+8. **Review gates.** Hold all changes at the human review gates defined in
    the stage contracts and `.ai/_config/security-policy.md`.
 
 ## Initialization

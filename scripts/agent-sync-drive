@@ -73,6 +73,21 @@ fi
 rclone copy "$REPO_ROOT/.ai/shared/memory" "$DRIVE_REMOTE/repositories/$REPO_KEY/memory" --checksum
 rclone copy "$REPO_ROOT/.ai/audit"         "$DRIVE_REMOTE/repositories/$REPO_KEY/audit"  --checksum
 
+# Mirror contracts and per-agent memory.
+if [ -d "$REPO_ROOT/.ai/contracts" ]; then
+  rclone copy "$REPO_ROOT/.ai/contracts" "$DRIVE_REMOTE/contracts" --checksum
+fi
+for agent_mem in "$REPO_ROOT"/.ai/agents/*/memory; do
+  [ -d "$agent_mem" ] || continue
+  aid=$(python3 -c "import json; print(json.load(open('$agent_mem/manifest.json')).get('agent_id','unknown'))" 2>/dev/null || echo "unknown")
+  rclone copy "$agent_mem" "$DRIVE_REMOTE/agents/$aid/memory" --checksum
+done
+
+# Mirror project indexes.
+if [ -d "$REPO_ROOT/.ai/projects" ]; then
+  rclone copy "$REPO_ROOT/.ai/projects" "$DRIVE_REMOTE/projects" --checksum
+fi
+
 echo "$CHECKSUM  $(basename "$BUNDLE")" > "$WORK/checksum.txt"
 rclone copy "$WORK/checksum.txt" "$DRIVE_REMOTE/checksums/" --checksum
 

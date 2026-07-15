@@ -83,8 +83,11 @@ artifacts unless the task explicitly requires it.
 .ai/
   CONTEXT.md                 <- you are here (Layer 0)
   INITIALIZE.md              <- read-and-execute protocol for new agents
+  ONBOARDING.md              <- read-and-execute protocol for contractor agents
   _config/                   <- repositories, reporting, sync, security policy (Layer 3)
   agents/                    <- role charters (_roles/), registry, named agent folders (Layer 1)
+  contracts/                 <- versioned contractor contracts (Layer 3)
+  projects/                  <- per-project branch indexes and coordination (Layer 3)
   shared/
     memory/                  <- durable architecture, decisions, conventions (Layer 3)
     schemas/                 <- agent-event and stage-output JSON Schemas (Layer 3)

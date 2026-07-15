@@ -25,7 +25,8 @@
       "type": "string",
       "enum": [
         "INTAKE", "PLAN", "WORKTREE", "CHANGE", "COMMIT", "PUSH", "PR",
-        "VERIFY", "SYNC", "CONFLICT", "BLOCKED", "HANDOFF", "BYPASS"
+        "VERIFY", "SYNC", "CONFLICT", "BLOCKED", "HANDOFF", "BYPASS",
+        "CONTRACT", "CONTRACT_REVIEW", "PERSONA_GATE"
       ]
     },
     "task_id": {
@@ -77,6 +78,14 @@
     "drive_checksum": { "type": "string" },
     "risks": { "type": "string" },
     "review_gate": { "type": "string" },
-    "parent_event_id": { "type": "string" }
+    "parent_event_id": { "type": "string" },
+    "contract_id": {
+      "type": "string",
+      "description": "Contract ID for contractor-related events"
+    },
+    "project_slug": {
+      "type": "string",
+      "description": "Project slug for contractor coordination events"
+    }
   }
 }

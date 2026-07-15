@@ -9,6 +9,8 @@ One directory per task, named by task ID:
 ```
 <task-id>/
   metadata.json      <- task id, agent, repository, branch, claimed files, status
+                        (contractors also require: contract_id, project_slug,
+                         contractor_type, isolation_mode)
   events.jsonl       <- every emitted event, one JSON object per line
                         (schema: .ai/shared/schemas/agent-event.schema.json)
   handoff.md         <- final state, evidence, risks, next safe action

@@ -48,6 +48,11 @@ Each skill: what it is, when to use it, and the codebase evidence that backs it.
   `.ai/shared/memory/decisions/0001-adopt-icm-filesystem-architecture.md`.
 - **Conflict resolution** — on overlapping file claims, post CONFLICT and
   coordinate before continuing. Evidence: `.cursor/rules/sai-coordination.mdc`.
+- **Contractor compliance auditing** — audit contractors against
+  `.ai/ONBOARDING.md` and INITIALIZE mechanical subset; verify persona gate,
+  `contract_id` on runs, `agent-contract-pr-review` on PRs, and Drive memory
+  mirror status. Evidence: `.ai/ONBOARDING.md`, decision 0003,
+  `scripts/agent-contract-pr-review`.
 
 ## Codebase best practices (verified 2026-07-14)
 
