@@ -5,7 +5,7 @@
   "repository": "Dezocode/Sai",
   "branch": "cursor/runtime-adapters-6fee",
   "base_sha": "d43297b",
-  "status": "implement",
+  "status": "completed",
   "claimed_files": [
     ".ai/shared/memory/decisions/0002-multi-runtime-agent-adapters.md",
     ".ai/shared/references/agent-runtimes.md",
