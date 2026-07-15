@@ -175,7 +175,10 @@ of every Cursor tool, MCP server, integration, and skill you will claim:
    ```
    It becomes `tools.json` in your agent folder (Phase 6), and
    `scripts/agent-automation-spec` embeds only its `verified` entries into
-   your automation profile.
+   your automation profile. The script **refuses** cross-agent writes unless
+   `SAI_AGENT_ID` matches the target `agent_id` (exact or `<agent_id>-*`
+   prefix) and blocks cross-runtime environment overwrites unless you pass
+   `--force`.
 
 **Verification:** every claim in your draft inventory carries evidence and
 a date; best-practice notes cite the file or run they came from.

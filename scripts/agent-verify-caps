@@ -6,22 +6,114 @@
 # only verified entries into the agent's tools.json.
 #
 # Usage:
-#   agent-verify-caps --tools-file .ai/agents/<name>/tools.json
+#   SAI_AGENT_ID=<your-agent-id> agent-verify-caps \
+#     --tools-file .ai/agents/<your-folder>/tools.json
 #                     [--environment "cursor-cloud-vm"]
+#                     [--force]   # allow environment label change only
+#
+# Ownership: refuses to write another agent's tools.json unless SAI_AGENT_ID
+# matches that agent's agent_id (exact or <agent_id>-* prefix). Cross-runtime
+# environment changes require --force.
 set -euo pipefail
 
 TOOLS_FILE=""
 ENV_LABEL="${SAI_ENV_LABEL:-cursor-cloud-vm}"
+FORCE=0
 while [ $# -gt 0 ]; do
   case $1 in
     --tools-file) TOOLS_FILE=$2; shift 2;;
     --environment) ENV_LABEL=$2; shift 2;;
+    --force) FORCE=1; shift;;
     *) echo "agent-verify-caps: unknown option $1" >&2; exit 2;;
   esac
 done
 
 [ -n "$TOOLS_FILE" ] && [ -f "$TOOLS_FILE" ] || {
   echo "agent-verify-caps: --tools-file must point to an existing tools.json" >&2; exit 1; }
+
+REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
+CALLER_ID="${SAI_AGENT_ID:-}"
+
+# Mechanical ownership + environment guard (Phase 5B integrity).
+python3 - "$TOOLS_FILE" "$CALLER_ID" "$ENV_LABEL" "$FORCE" "$REPO_ROOT" <<'PY'
+import json, os, sys
+
+path, caller, env_label, force, root = sys.argv[1:6]
+force = force == "1"
+
+norm = os.path.normpath(path)
+parts = norm.split(os.sep)
+if len(parts) < 4 or parts[-1] != "tools.json" or parts[-3] != "agents" or parts[-4] != ".ai":
+    print(f"agent-verify-caps: tools file must live at .ai/agents/<folder>/tools.json (got {path})", file=sys.stderr)
+    sys.exit(1)
+
+folder_slug = parts[-2]
+expected_rel = f".ai/agents/{folder_slug}/tools.json"
+
+try:
+    doc = json.load(open(path))
+except json.JSONDecodeError as e:
+    print(f"agent-verify-caps: invalid JSON in {path}: {e}", file=sys.stderr)
+    sys.exit(1)
+
+target_id = doc.get("agent_id")
+folder_field = doc.get("folder", "")
+if folder_field and folder_field.rstrip("/") != f".ai/agents/{folder_slug}":
+    print(
+        f"agent-verify-caps: tools.json folder '{folder_field}' != path '.ai/agents/{folder_slug}'",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+
+if not target_id:
+    print(f"agent-verify-caps: tools.json missing agent_id", file=sys.stderr)
+    sys.exit(1)
+
+# Registry lookup (optional during provisional scaffold before registration).
+registry_path = os.path.join(root, ".ai/agents/registry.json")
+if os.path.isfile(registry_path):
+    reg = json.load(open(registry_path))
+    for entry in reg.get("agents", []):
+        if entry.get("folder", "").rstrip("/") == f".ai/agents/{folder_slug}":
+            if entry.get("agent_id") != target_id:
+                print(
+                    f"agent-verify-caps: registry agent_id '{entry.get('agent_id')}' "
+                    f"!= tools.json agent_id '{target_id}' for {expected_rel}",
+                    file=sys.stderr,
+                )
+                sys.exit(1)
+            break
+
+if not caller:
+    print(
+        "agent-verify-caps: SAI_AGENT_ID unset — set it to your agent-id before surveying "
+        "(e.g. SAI_AGENT_ID=ceo agent-verify-caps --tools-file .ai/agents/sai/tools.json)",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+
+def authorized(caller_id: str, agent_id: str) -> bool:
+    return caller_id == agent_id or caller_id.startswith(agent_id + "-")
+
+if not authorized(caller, target_id):
+    print(
+        f"agent-verify-caps: REFUSED — SAI_AGENT_ID='{caller}' is not authorized to "
+        f"overwrite tools.json for agent_id '{target_id}' ({expected_rel}). "
+        f"Run from your own agent folder with your own agent-id.",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+
+prev_env = doc.get("environment", "")
+pending = prev_env.startswith("pending")
+if prev_env and not pending and prev_env != env_label and not force:
+    print(
+        f"agent-verify-caps: REFUSED — environment would change from '{prev_env}' to "
+        f"'{env_label}'. Pass --force only if you intentionally re-survey from a new runtime.",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+PY
 
 TODAY=$(date -u +%Y-%m-%d)
 CAPS=()
@@ -111,8 +203,11 @@ doc = json.load(open(path))
 doc["environment"] = env
 doc["surveyed_at"] = today
 doc["capabilities"] = caps
-json.dump(doc, open(path, "w"), indent=2)
+with open(path, "w") as f:
+    json.dump(doc, f, indent=2)
+    f.write("\n")
 json.dump(doc, sys.stdout, indent=2)
+print(file=sys.stdout)
 print(f"\nagent-verify-caps: wrote {len(caps)} capabilities to {path}", file=sys.stderr)
 verified = sum(1 for c in caps if c["status"] == "verified")
 print(f"  verified: {verified}/{len(caps)}", file=sys.stderr)

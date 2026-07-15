@@ -33,7 +33,7 @@ Secretary agents (dezo-sec, monae-sec) not yet registered — expected; no CONFL
 
 1. **CONTEXT.md Phase mismatch** — Layer 0 said "Phase 7 report" while INITIALIZE.md ends at Phase 9. Fixed to Phase 9.
 2. **INITIALIZE Phase 5B** — Added Cursor marketplace skills enumeration and explicit rule: run `agent-verify-caps` only on your own folder from your own runtime (prevents cross-environment tools.json corruption; caught when CEO VM nearly overwrote Mimi's Claude Code inventory).
-3. **Sai tools.json** — Refreshed survey dates; added `gh-fork-workflow-view` capability.
+3. **Mechanical enforcement added** — `scripts/agent-verify-caps` now refuses cross-agent writes unless `SAI_AGENT_ID` matches target `agent_id` (exact or `<agent_id>-*` prefix) and blocks cross-runtime environment overwrites without `--force`.
 
 ## Emergent recommendations (no code change)
 
