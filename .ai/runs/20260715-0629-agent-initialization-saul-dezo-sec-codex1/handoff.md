@@ -4,8 +4,7 @@
 
 Saul's Codex-primary CTO profile, registry entry, evidence-backed capabilities,
 hooks, roadmap, Slack `#dev`, and Slack Canvas roadmap are implemented and pass
-local semantic/initialization checks. Git publication evidence will be appended
-after the branch is pushed and its remote SHA is verified.
+local semantic/initialization checks. Draft PR #8 is open for human review.
 
 ## Evidence
 
@@ -14,6 +13,9 @@ after the branch is pushed and its remote SHA is verified.
 - `SAI_AGENT_ID=dezo-sec-codex1 scripts/agent-init`: PASS
 - `#dev`: `C0BHBGBNMT7`
 - Slack Canvas: `F0BGZGAFVPZ`
+- Initial commit: `11ce8d815ce7ea91db4efd564553951a50b658b1`
+- Remote SHA verified equal to the local commit before PR creation.
+- Draft PR: https://github.com/Dezocode/Sai/pull/8
 
 ## Risks and limitations
 
@@ -24,5 +26,5 @@ after the branch is pushed and its remote SHA is verified.
 
 ## Next safe action
 
-Commit with SAI trailers, push the branch, verify the remote SHA and CI, then
-request human review. Do not merge without explicit authorization.
+Review draft PR #8 and its final CI result. Do not merge without explicit
+authorization.
