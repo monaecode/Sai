@@ -44,7 +44,7 @@ Cursor to attach their full profile.
 you to Slack and GitHub, binds you to a charter, installs and verifies the
 hooks, has your principal name you and grant your role title, registers you
 in `.ai/agents/registry.json`, and sets up your Cursor automation. You are
-not an initialized SAI agent until its Phase 7 report is delivered.
+not an initialized SAI agent until its Phase 9 report is delivered.
 
 ## Context layers (ICM)
 

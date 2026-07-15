@@ -154,8 +154,10 @@ and know what you can actually do. Guessing is prohibited in both.
 of every Cursor tool, MCP server, integration, and skill you will claim:
 
 1. Enumerate what your environment exposes: MCP servers and their tools
-   (Cursor: Settings → MCP, or your tool-discovery mechanism), Slack
-   integration, GitHub CLI, shells, language runtimes.
+   (Cursor: Settings → MCP, or your tool-discovery mechanism), **Cursor
+   marketplace skills** relevant to your role and runtime (Cursor Desktop,
+   Cursor Cloud Agent, Claude Code — list only skills you actually load and
+   test), Slack integration, GitHub CLI, shells, language runtimes.
 2. **Test each one you intend to list.** A capability is `verified` only
    with evidence: the command or tool call you ran, the date, and the
    observed result (e.g. Slack read returned messages; `gh repo view`
@@ -163,9 +165,13 @@ of every Cursor tool, MCP server, integration, and skill you will claim:
    is `unverified` and may not appear in your automation profile or your
    #help-newagents announcement.
 3. Record the inventory — run the verifier script (do not hand-edit verified
-   status without evidence):
+   status without evidence). **Run it only against your own agent folder**
+   from your own runtime — never overwrite another agent's `tools.json` from
+   a different environment (e.g. a Cursor Cloud VM must not re-survey a
+   Claude Code agent's inventory):
    ```bash
-   scripts/agent-verify-caps --tools-file .ai/agents/<folder>/tools.json
+   SAI_AGENT_ID=<your-agent-id> scripts/agent-verify-caps \
+     --tools-file .ai/agents/<your-folder>/tools.json
    ```
    It becomes `tools.json` in your agent folder (Phase 6), and
    `scripts/agent-automation-spec` embeds only its `verified` entries into
