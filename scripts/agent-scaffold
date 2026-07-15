@@ -9,7 +9,7 @@
 set -euo pipefail
 
 NAME="" AGENT_ID="" ROLE_TITLE="" PRINCIPAL="" PURPOSE="" CHARTER=""
-FOLDER="" PRIMARY_RUNTIME="cursor"
+FOLDER="" PRIMARY_RUNTIME="cursor" CONTRACT_ID="" WITH_MEMORY=0
 while [ $# -gt 0 ]; do
   case $1 in
     --name) NAME=$2; shift 2;;
@@ -20,6 +20,8 @@ while [ $# -gt 0 ]; do
     --charter) CHARTER=$2; shift 2;;
     --folder-name) FOLDER=$2; shift 2;;
     --primary-runtime) PRIMARY_RUNTIME=$2; shift 2;;
+    --contract-id) CONTRACT_ID=$2; shift 2;;
+    --with-memory) WITH_MEMORY=1; shift;;
     *) echo "agent-scaffold: unknown option $1" >&2; exit 2;;
   esac
 done
@@ -35,7 +37,17 @@ case "$PRIMARY_RUNTIME" in
 esac
 
 REPO_ROOT=$(git rev-parse --show-toplevel)
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+# shellcheck source=scripts/lib/agent-path-guards.sh
+. "$SCRIPT_DIR/lib/agent-path-guards.sh"
 slugify() { printf '%s' "$1" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g;s/--*/-/g;s/^-//;s/-$//'; }
+
+guard_agent_id "$AGENT_ID"
+guard_charter_path "$REPO_ROOT" "$CHARTER"
+[ -z "$CONTRACT_ID" ] || guard_contract_id "$CONTRACT_ID"
+[ -z "$NAME" ] || guard_json_safe_string name "$NAME"
+[ -z "$ROLE_TITLE" ] || guard_json_safe_string role-title "$ROLE_TITLE"
+[ -z "$PURPOSE" ] || guard_json_safe_string purpose "$PURPOSE"
 
 if [ -z "$FOLDER" ]; then
   if printf '%s' "$NAME" | grep -q 'pending'; then
@@ -44,8 +56,10 @@ if [ -z "$FOLDER" ]; then
     FOLDER=$(slugify "$NAME")
   fi
 fi
+guard_slug folder-name "$FOLDER"
 
 AGENT_DIR="$REPO_ROOT/.ai/agents/$FOLDER"
+guard_under_ai_subtree "$REPO_ROOT" ".ai/agents/$FOLDER" "agents"
 CANONICAL_TOOLS="runtimes/${RUNTIME_SUITE}/tools.json"
 mkdir -p "$AGENT_DIR/automation" "$AGENT_DIR/runtimes/cursor/automation" \
          "$AGENT_DIR/runtimes/claude/automation" "$AGENT_DIR/runtimes/codex/automation"
@@ -197,5 +211,10 @@ cat > "$AGENT_DIR/hooks.json" <<EOF
 EOF
 
 echo "agent-scaffold: created $AGENT_DIR (primary-runtime=$PRIMARY_RUNTIME)"
+if [ "$WITH_MEMORY" = "1" ] || [ -n "$CONTRACT_ID" ]; then
+  MEM_ARGS=(--agent-id "$AGENT_ID" --folder ".ai/agents/$FOLDER")
+  [ -n "$CONTRACT_ID" ] && MEM_ARGS+=(--contract-id "$CONTRACT_ID")
+  "$REPO_ROOT/scripts/agent-memory-scaffold" "${MEM_ARGS[@]}"
+fi
 echo "  Next: Phase 5B survey → scripts/agent-verify-caps --tools-file $AGENT_DIR/$CANONICAL_TOOLS --environment $RUNTIME_ENV"
 echo "  Phase 7 → scripts/agent-automation-spec --out $AGENT_DIR/runtimes/$RUNTIME_SUITE/automation/profile.md"
