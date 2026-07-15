@@ -93,9 +93,9 @@ try:
 except subprocess.CalledProcessError:
     checks.append({"criterion": "audit_trailers", "status": "skip", "detail": "branch unavailable"})
 
-fails = [c for c in checks if c["status"] == "fail"]
+blockers = [c for c in checks if c["status"] in ("fail", "warn", "skip")]
 manuals = [c for c in checks if c["status"] == "manual"]
-if fails:
+if blockers:
     overall = "fail"
 elif manuals:
     overall = "pending_manual"
@@ -129,7 +129,7 @@ if os.path.exists(proj_index):
     json.dump(idx, open(proj_index, "w"), indent=2)
 
 print(overall)
-sys.exit(1 if fails or manuals else 0)
+sys.exit(1 if blockers or manuals else 0)
 PY
 PY_EXIT=$?
 set -e

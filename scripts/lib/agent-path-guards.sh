@@ -162,10 +162,13 @@ guard_under_ai_subtree() {
 
 guard_json_safe_string() {
   local label=$1 value=$2
-  case "$value" in
-    *$'\n'*|*$'\r'*|*$'\t'*|*\\*|*\"*)
-      echo "guard: $label contains disallowed control or quote characters" >&2
-      return 1
-      ;;
-  esac
+  if ! printf '%s' "$value" | python3 -c "
+import sys
+for ch in sys.stdin.read():
+    if ord(ch) < 32 or ch in '\\\\\"':
+        sys.exit(1)
+" 2>/dev/null; then
+    echo "guard: $label contains disallowed control or quote characters" >&2
+    return 1
+  fi
 }

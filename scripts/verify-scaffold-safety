@@ -119,7 +119,46 @@ Agent: ceo-automation"
     echo "FAIL  contract-pr-review — unexpected overall: $OUT" >&2
     FAILED=1
   fi
+
+  # P1 (Saul PR #10): nonexistent branch must not return pass when criteria are empty
+  EMPTY_DIR="$TMP_BASE/empty-contract"
+  mkdir -p "$EMPTY_DIR/.ai/contracts/20260715-emptyproj-dezocode/reviews"
+  cat > "$EMPTY_DIR/.ai/contracts/20260715-emptyproj-dezocode/contract.json" <<'JSON'
+{
+  "contract_id": "20260715-emptyproj-dezocode",
+  "project_slug": "emptyproj",
+  "branch_prefix": "proj/emptyproj/",
+  "acceptance_criteria": []
+}
+JSON
+  git -C "$EMPTY_DIR" init -q
+  git -C "$EMPTY_DIR" config user.email "test@test" && git -C "$EMPTY_DIR" config user.name "test"
+  git -C "$EMPTY_DIR" add .ai
+  git -C "$EMPTY_DIR" commit -q -m "empty contract
+
+Task-ID: 20260715-2000-scaffold-safety-ceo
+Agent: ceo-automation"
+  OUT2=$(cd "$EMPTY_DIR" && SAI_AGENT_ID=ceo-automation \
+    "$REPO_ROOT/scripts/agent-contract-pr-review" \
+      --contract-id 20260715-emptyproj-dezocode \
+      --branch proj/emptyproj/nonexistent 2>&1 || true)
+  if echo "$OUT2" | grep -qx 'pass'; then
+    echo "FAIL  contract-pr-review — pass on nonexistent branch with empty criteria" >&2
+    FAILED=1
+  elif echo "$OUT2" | grep -qx 'fail'; then
+    echo "PASS  contract-pr-review — fail when branch unavailable"
+  else
+    echo "FAIL  contract-pr-review — unexpected overall for missing branch: $OUT2" >&2
+    FAILED=1
+  fi
 fi
+
+# P2 (Saul PR #10): guard_json_safe_string must reject all C0 control characters
+# shellcheck source=scripts/lib/agent-path-guards.sh
+. "$REPO_ROOT/scripts/lib/agent-path-guards.sh"
+BAD_JSON_VAL=$(printf 'bad\x01value')
+check_fail "json-safe-string C0 control (U+0001)" \
+  guard_json_safe_string test "$BAD_JSON_VAL"
 
 echo
 if [ "$FAILED" = "0" ]; then
