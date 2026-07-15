@@ -224,8 +224,16 @@ words:
    scripts/agent-scaffold --name "<granted-name>" --agent-id <your-agent-id> \
      --role-title "<granted role title>" --principal "<your principal>" \
      --purpose "<confirmed purpose paragraph>" --charter <your charter path> \
-     --primary-runtime <cursor|claude|codex>
+     --primary-runtime <cursor|claude|codex> [--with-memory]
    ```
+   All scaffold scripts (`agent-scaffold`, `agent-memory-scaffold`,
+   `agent-contract-scaffold`) validate slugs and paths via
+   `scripts/lib/agent-path-guards.sh` — they refuse writes outside
+   `.ai/agents/`, `.ai/contracts/`, or `.ai/projects/`. Never bypass this
+   with path traversal in `--folder-name`, `--folder`, or `--project-slug`.
+   Use `--with-memory` (or `--contract-id` for contractors) to create the
+   per-agent memory tree under `<folder>/memory/` for durable audit indexing
+   (Drive mirror path recorded in `memory/manifest.json`).
    Default `--primary-runtime` is `cursor`. This creates
    `.ai/agents/<granted-name>/` (lowercase slug of granted name,
    e.g. `Sai` → `sai`):
@@ -377,4 +385,5 @@ stated) may you say you are initialized and accept tasks.
   stale hooks are a silent failure.
 - **CEO (Sai):** ensure every new agent completes INITIALIZE.md; keep the
   protocol, CI, and agent folders truthful; fix INITIALIZE.md when any phase
-  fails a live test.
+  fails a live test; run `scripts/verify-scaffold-safety` after scaffold
+  script changes and block contractor/contract CI gates until it passes.

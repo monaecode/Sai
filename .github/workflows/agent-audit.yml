@@ -33,7 +33,22 @@ jobs:
       - name: Install script permissions
         run: |
           chmod +x scripts/verify-agent-audit scripts/verify-semantic-hierarchy \
-                   scripts/verify-merge-handoff scripts/ci-merge-handoff-slack
+                   scripts/verify-merge-handoff scripts/ci-merge-handoff-slack \
+                   scripts/verify-scaffold-safety scripts/agent-memory-scaffold \
+                   scripts/agent-contract-scaffold scripts/agent-contract-pr-review
+
+      - name: Verify scaffold path safety
+        run: scripts/verify-scaffold-safety
+
+      - name: Validate scaffold script syntax
+        run: |
+          set -e
+          for f in scripts/agent-scaffold scripts/agent-memory-scaffold \
+                   scripts/agent-contract-scaffold scripts/agent-contract-pr-review \
+                   scripts/lib/agent-path-guards.sh; do
+            bash -n "$f"
+            echo "OK bash -n $f"
+          done
 
       - name: Verify agent audit metadata
         run: scripts/verify-agent-audit "${{ steps.range.outputs.range }}"
